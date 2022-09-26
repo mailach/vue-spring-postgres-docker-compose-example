@@ -1,0 +1,50 @@
+version: "3.7"
+
+services:
+  frontend:
+    container_name: vue-dev
+    build:
+      context: ./vue-frontend/
+      dockerfile: Dockerfile
+      target: development
+    ports:
+      - 5173:5173
+    volumes:
+      - ./vue-frontend/:/app
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    networks:
+      - example
+  backend:
+    container_name: spring-dev
+    env_file:
+      - .env.dev
+    build:
+      context: ./spring-backend/
+      dockerfile: Dockerfile
+      target: development
+    ports:
+      - 127.0.0.1:8080:8080
+    volumes:
+      - ./spring-backend/:/app
+    restart: unless-stopped
+    networks:
+      - example
+  db:
+    env_file:
+      - .env.dev
+    container_name: postgres_db
+    image: postgres
+    volumes:
+      - ./postgres-database:/var/lib/postgresql/data
+    restart: always
+    ports:
+      - 5432:5432
+    networks:
+      - example
+
+networks:
+  example:

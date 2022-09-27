@@ -1,0 +1,36 @@
+version: "3.7"
+
+services:
+  frontend:
+    container_name: vue-prod
+    image: mailach/vue-prod-example
+    ports:
+      - 5173:80
+    restart: unless-stopped
+    networks:
+      - example
+
+  backend:
+    container_name: spring-prod
+    image: mailach/spring-prod-example
+    ports:
+      - 8080:8080
+    restart: unless-stopped
+    networks:
+      - example
+
+  db:
+    env_file:
+      - .env.prod
+    container_name: postgres_db
+    image: postgres
+    volumes:
+      - ./postgres-database:/var/lib/postgresql/data
+    restart: always
+    ports:
+      - 127.0.0.1:5432:5432
+    networks:
+      - example
+
+networks:
+  example:

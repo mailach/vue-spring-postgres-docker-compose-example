@@ -4,8 +4,10 @@ WORKDIR /app
 ENTRYPOINT ["mvn","spring-boot:run"]
 
 
-
-FROM development as production
+FROM development as build
 COPY . .
 RUN mvn package
-ENTRYPOINT ["java", "-jar", "/app/target/spring-boot-0.0.1-SNAPSHOT.jar"]
+
+FROM development as production
+COPY --from=build /app/target/spring-boot-0.0.1-SNAPSHOT.jar .
+ENTRYPOINT ["java", "-jar", "spring-boot-0.0.1-SNAPSHOT.jar"]

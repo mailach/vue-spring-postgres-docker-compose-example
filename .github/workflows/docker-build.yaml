@@ -1,0 +1,15 @@
+name: Build images
+on: push
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Spring backend build
+        uses: aevea/action-kaniko@master
+        with:
+          image: mailach/spring-prod-example
+          path: spring-backend/
+          target: production
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
